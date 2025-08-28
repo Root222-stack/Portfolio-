@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio - Brayane Djoufack</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* RESET & FONT */
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+  body{background:#0f0f1e;color:#fff;line-height:1.6;scroll-behavior:smooth;overflow-x:hidden;}
+  a{text-decoration:none;color:inherit;}
+
+  /* HEADER NEON */
+  header{
+    text-align:center;padding:5rem 1rem;
+    background:#0f0f1e;position:relative;overflow:hidden;
+  }
+  header h1{
+    font-size:3rem;color:#00fff0;text-shadow:0 0 10px #00fff0,0 0 20px #00fff0;
+    animation: neon1 1.5s ease-in-out infinite alternate;
+  }
+  header p{
+    font-size:1.2rem;color:#0ff;text-shadow:0 0 5px #0ff,0 0 10px #0ff;
+    margin-bottom:2rem; animation: fadeInUp 1s ease;
+  }
+  .btn{
+    background: linear-gradient(45deg,#00fff0,#ff00f7,#ffdd00);
+    background-size:200% 200%;
+    color:#0f0f1e;padding:0.8rem 2rem;border-radius:12px;font-weight:700;
+    text-transform:uppercase;transition:0.4s;
+    display:inline-block;
+    animation: btnGlow 2s linear infinite alternate;
+  }
+  .btn:hover{transform:scale(1.1);}
+
+  /* NEON ANIMATIONS */
+  @keyframes neon1{
+    0%{text-shadow:0 0 5px #00fff0,0 0 10px #00fff0,0 0 20px #00fff0,0 0 40px #0ff;}
+    100%{text-shadow:0 0 20px #00fff0,0 0 40px #00fff0,0 0 60px #0ff,0 0 80px #0ff;}
+  }
+  @keyframes btnGlow{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+  }
+  @keyframes fadeInUp{0%{opacity:0; transform:translateY(30px);}100%{opacity:1; transform:translateY(0);}}
+
+  /* SECTIONS */
+  section{padding:5rem 1rem; max-width:1200px; margin:auto;}
+  section h2{
+    font-size:2.8rem;text-align:center;margin-bottom:2rem;
+    color:#00fff0;text-shadow:0 0 10px #00fff0;
+  }
+  section h2::after{
+    content:''; width:80px; height:3px; background:#ff00f7; display:block; margin:10px auto 0; border-radius:2px;
+  }
+
+  /* GRID CARDS */
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:2rem;}
+  .card{
+    background:#11112a; padding:2rem; border-radius:16px;
+    box-shadow:0 0 10px #00fff0,0 0 20px #ff00f7;
+    transition:0.5s; position:relative; overflow:hidden;
+  }
+  .card:hover{
+    transform:translateY(-10px) scale(1.05);
+    box-shadow:0 0 20px #00fff0,0 0 40px #ff00f7,0 0 60px #ffdd00;
+  }
+  .card h3{margin-bottom:1rem;color:#00fff0;}
+  .card p{color:#ccc; line-height:1.5;}
+
+  /* CARD NEON EFFECT */
+  .card::before{
+    content:""; position:absolute; top:0; left:0; width:100%; height:100%;
+    background: linear-gradient(120deg,#00fff0,#ff00f7,#ffdd00); opacity:0.1; transform:scale(0); transition:0.5s; border-radius:16px;
+  }
+  .card:hover::before{transform:scale(1);}
+
+  /* ABOUT */
+  #about p{max-width:900px; margin:auto;text-align:center; font-size:1.2rem; color:#ccc; line-height:1.8;}
+
+  /* CONTACT FORM */
+  .contact-form{max-width:600px;margin:auto;display:flex;flex-direction:column;gap:1rem;}
+  input, textarea{
+    padding:1rem; border-radius:12px; border:none; background:#11112a; color:#fff;
+    box-shadow:0 0 5px #00fff0 inset;
+  }
+  input:focus, textarea:focus{outline:none; border:2px solid #00fff0;}
+  button{border:none; background:linear-gradient(45deg,#00fff0,#ff00f7,#ffdd00); padding:0.8rem 2rem; color:#0f0f1e; border-radius:12px; font-weight:700; cursor:pointer; transition:0.3s;}
+  button:hover{transform:scale(1.1);}
+
+  /* FOOTER */
+  footer{text-align:center; padding:2rem 1rem; background:#11112a; color:#aaa;}
+  footer a{color:#00fff0; margin:0 0.5rem;}
+
+  /* SCROLL ANIMATION */
+  [data-animate]{opacity:0; transform:translateY(30px); transition:0.6s ease-out;}
+  [data-animate].active{opacity:1; transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Brayane Djoufack</h1>
+  <p class="neon-slogan">Des solutions performantes, avec passion et détermination.</p>
+  <a href="https://wa.me/237600000000" target="_blank" class="btn">Me contacter</a>
+</header>
+
+<style>
+/* Néon animé pour le slogan */
+.neon-slogan {
+  font-size:1.5rem;
+  color:#00fff0;
+  text-shadow:
+    0 0 5px #00fff0,
+    0 0 10px #00fff0,
+    0 0 20px #00fff0,
+    0 0 40px #ff00f7,
+    0 0 80px #ff00f7;
+  animation: neonPulse 1.5s ease-in-out infinite alternate;
+  margin-bottom:2rem;
+}
+
+@keyframes neonPulse {
+  0% {
+    text-shadow:
+      0 0 5px #00fff0,
+      0 0 10px #00fff0,
+      0 0 20px #00fff0,
+      0 0 40px #ff00f7,
+      0 0 80px #ff00f7;
+  }
+  50% {
+    text-shadow:
+      0 0 10px #00fff0,
+      0 0 20px #00fff0,
+      0 0 40px #00fff0,
+      0 0 60px #ff00f7,
+      0 0 120px #ff00f7;
+  }
+  100% {
+    text-shadow:
+      0 0 5px #00fff0,
+      0 0 10px #00fff0,
+      0 0 20px #00fff0,
+      0 0 40px #ff00f7,
+      0 0 80px #ff00f7;
+  }
+}
+</style>
+<section id="about" data-animate>
+  <h2>À propos</h2>
+  <p>Développeur front-end (HTML, CSS, JavaScript) avec compétences en PHP/MySQL et Python. Certifié SOC Analyst par Cisco, je propose des services de création de sites modernes et sécurisés, d’audit de sécurité, et de design graphique. Mon objectif : livrer des solutions fiables, performantes et impressionnantes visuellement.</p>
+</section>
+
+<section id="services" data-animate>
+  <h2>Services</h2>
+  <div class="grid">
+    <div class="card"><h3>🌐 Site vitrine</h3><p>Création de sites modernes, responsives et rapides.</p></div>
+    <div class="card"><h3>🎨 Refonte front-end</h3><p>Amélioration du design, UX et performances.</p></div>
+    <div class="card"><h3>🔒 Audit sécurité</h3><p>Analyse de vulnérabilités et recommandations concrètes.</p></div>
+    <div class="card"><h3>⚡ Scripts Python</h3><p>Automatisation de tâches simples et outils légers.</p></div>
+    <div class="card"><h3>🖌️ Création graphique</h3><p>Flyers, bannières, logos, templates et supports visuels attractifs.</p></div>
+    <div class="card"><h3>✍️ Rédaction & contenu</h3><p>Rédaction web, articles, posts pour réseaux sociaux et newsletters.</p></div>
+    <div class="card"><h3>📊 Solutions de gestion</h3><p>Outils simples pour gérer vos projets, stocks, clients et reporting.</p></div>
+    <div class="card"><h3>🔧 Maintenance</h3><p>Mises à jour, sauvegardes et support continu pour vos sites et applications.</p></div>
+  </div>
+</section>
+
+<section id="portfolio" data-animate>
+  <h2>Portfolio</h2>
+  <div class="grid">
+    <div class="card"><h3>Landing page Restaurant</h3><p>Site vitrine moderne avec menu et réservation WhatsApp.</p></div>
+    <div class="card"><h3>Portfolio Freelance</h3><p>Template responsive et cyber-style pour freelances.</p></div>
+    <div class="card"><h3>Audit WordPress</h3><p>Analyse de sécurité avancée et rapport détaillé.</p></div>
+  </div>
+  <p style="text-align:center; margin-top:2rem;"><a href="https://github.com/" target="_blank" class="btn">Voir plus sur GitHub</a></p>
+</section>
+
+<section id="contact" data-animate>
+  <h2>Contact</h2>
+  <form class="contact-form">
+    <input type="text" placeholder="Nom" required>
+    <input type="email" placeholder="Email" required>
+    <textarea rows="5" placeholder="Votre message"></textarea>
+    <button type="submit">Envoyer</button>
+  </form>
+</section>
+
+<footer>
+  <p>&copy; 2025 Brayane Djoufack - Tous droits réservés.</p>
+  <p>
+    <a href="https://wa.me/237600000000">WhatsApp</a> |
+    <a href="https://linkedin.com">LinkedIn</a> |
+    <a href="mailto:email@example.com">Email</a>
+  </p>
+</footer>
+
+<script>
+  // Scroll animations
+  const animateElements = document.querySelectorAll('[data-animate]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) entry.target.classList.add('active');
+    });
+  }, {threshold:0.3});
+  animateElements.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
