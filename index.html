@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIP Invitation</title>
+<style>
+* { box-sizing: border-box; margin:0; padding:0; font-family: Arial, sans-serif; }
+body { background:#111; color:white; display:flex; justify-content:center; padding:20px; min-height:100vh; }
+.container { max-width:500px; width:100%; }
+.ticket, #loginAdmin, #adminPanel { background:black; border:3px solid gold; border-radius:12px; padding:25px; margin-bottom:20px; text-align:center; }
+.ticket h1 { font-size:50px; color:gold; margin-bottom:5px; }
+.ticket h2 { font-family:cursive; font-size:36px; margin-bottom:15px; color:gold; }
+.ticket h3 { font-size:20px; margin-bottom:20px; }
+.ticket p, #loginAdmin p { margin:8px 0; font-size:16px; }
+input, button { width:100%; padding:12px; margin:10px 0; border-radius:6px; font-size:16px; }
+input { border:none; outline:none; }
+button { border:none; background:gold; color:black; font-weight:bold; cursor:pointer; transition:0.3s; }
+button:hover { background:#e6c200; }
+label { display:flex; align-items:center; justify-content:flex-start; font-size:14px; cursor:pointer; }
+label input { width:auto; margin-right:8px; }
+#adminPanel table { width:100%; border-collapse: collapse; margin-top:10px; }
+#adminPanel th, #adminPanel td { border:1px solid gold; padding:8px; text-align:center; font-size:14px; }
+#adminPanel th { background:gold; color:black; }
+@media(max-width:480px){ .ticket h1{font-size:40px;} .ticket h2{font-size:28px;} }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- Billet Utilisateur -->
+<div class="ticket" id="userTicket">
+  <h1>VIP</h1>
+  <h3>MEMBERS ONLY</h3>
+  <h2>Invitation</h2>
+  <p><b>Evènement :</b> Gala VIP Night</p>
+  <p><b>Lieu :</b> Yaoundé</p>
+  <p><b>Date :</b> 20 Avril 2026</p>
+  <p><b>Dress code :</b> Chic & Elegant</p>
+  <p><b>Organisateur :</b> VIP Club</p>
+
+  <form id="invitationForm">
+    <input type="text" id="nom" placeholder="Votre nom" required>
+    <input type="email" id="email" placeholder="Votre email" required>
+    <label><input type="checkbox" id="accept"> J'accepte la contribution de 3000 FCFA</label>
+    <button type="submit">Soumettre</button>
+  </form>
+  <p id="statusMsg"></p>
+  <button id="adminLoginBtn" style="margin-top:20px;background:white;color:black;">Login Admin</button>
+</div>
+
+<!-- Login Admin -->
+<div id="loginAdmin" style="display:none">
+  <h3>Connexion Administrateur</h3>
+  <input type="password" id="adminPassword" placeholder="Mot de passe admin">
+  <button id="submitAdminLogin">Se connecter</button>
+  <p id="adminStatus"></p>
+</div>
+
+<!-- Admin Panel -->
+<div id="adminPanel" style="display:none">
+  <h3>Admin - Invitations en attente</h3>
+  <table>
+    <thead>
+      <tr><th>Nom</th><th>Email</th><th>Contribution</th><th>Valider</th></tr>
+    </thead>
+    <tbody id="adminTable"></tbody>
+  </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+  // -------- SUPABASE INITIALISÉ AVANT TOUT --------
+  const supabaseUrl = "https://oaaeyphblkjreprmyxmf.supabase.co";
+  const supabaseKey = "sb_publishable_juLEiMtStagP0SJL_QZtyg_0-UbCFa2";
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+  document.addEventListener("DOMContentLoaded", function(){
+
+    emailjs.init("sb_publishable_juLEiMtStagP0SJL_QZtyg_0-UbCFa2"); 
+    const emailService = "YOUR_SERVICE_ID"; 
+    const emailTemplate = "YOUR_TEMPLATE_ID"; 
+    const ADMIN_PASSWORD = "MonSuperMotDePasse123";
+
+    // -------- UTILISATEUR --------
+    const form = document.getElementById("invitationForm");
+    const statusMsg = document.getElementById("statusMsg");
+
+    form.addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      statusMsg.textContent = "";
+      const nom = document.getElementById("nom").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const accept = document.getElementById("accept").checked;
+
+      if(!nom || !email){ statusMsg.textContent = "Nom et email requis !"; return; }
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ statusMsg.textContent = "Email invalide !"; return; }
+      if(!accept){ statusMsg.textContent = "Vous devez accepter la contribution !"; return; }
+
+      try{
+        const { count } = await supabase.from("invitations").select("*", {count:"exact"}).eq("valide",true);
+        if(count >= 100){ statusMsg.textContent = "Plus d'invitations disponibles."; return; }
+
+        const { data, error } = await supabase.from("invitations").insert([{nom,email,contribution_accepted:true,valide:false}]);
+        console.log(data,error);
+        if(error) throw error;
+
+        statusMsg.style.color = "lime";
+        statusMsg.textContent = "Demande envoyée pour validation !";
+        form.reset();
+      }catch(err){
+        statusMsg.style.color = "red";
+        statusMsg.textContent = "Erreur : "+err.message;
+      }
+    });
+
+    // -------- ADMIN LOGIN --------
+    const adminBtn = document.getElementById("adminLoginBtn");
+    const loginDiv = document.getElementById("loginAdmin");
+    const adminPanel = document.getElementById("adminPanel");
+    const adminStatus = document.getElementById("adminStatus");
+    const submitAdmin = document.getElementById("submitAdminLogin");
+    const adminTable = document.getElementById("adminTable");
+
+    adminBtn.addEventListener("click", ()=>{
+      loginDiv.style.display="block";
+      adminBtn.style.display="none";
+    });
+
+    submitAdmin.addEventListener("click", ()=>{
+      const pwd = document.getElementById("adminPassword").value;
+      if(pwd === ADMIN_PASSWORD){
+        loginDiv.style.display="none";
+        adminPanel.style.display="block";
+        loadAdmin();
+      } else{
+        adminStatus.textContent = "Mot de passe incorrect !";
+        adminStatus.style.color="red";
+      }
+    });
+
+    // -------- ADMIN PANEL --------
+    async function loadAdmin(){
+      try{
+        const { data, error } = await supabase.from("invitations").select("*").eq("valide",false);
+        if(error) throw error;
+        adminTable.innerHTML = "";
+        data.forEach(inv=>{
+          const row = document.createElement("tr");
+          row.innerHTML = `<td>${inv.nom}</td><td>${inv.email}</td><td>${inv.contribution_accepted?"Oui":"Non"}</td>
+          <td><button onclick="valider(${inv.id},'${inv.nom}','${inv.email}')">Valider</button></td>`;
+          adminTable.appendChild(row);
+        });
+      }catch(err){ console.log("Admin load error",err); }
+    }
+
+    // -------- VALIDER + PDF + EMAIL --------
+    window.valider = async function(id, nom, email){
+      try{
+        await supabase.from("invitations").update({valide:true}).eq("id",id);
+        const pdfBlob = generatePDF(nom);
+        await sendEmail(nom,email,pdfBlob);
+        loadAdmin();
+      }catch(err){ alert("Erreur validation : "+err.message); }
+    }
+
+    function generatePDF(nom){
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF();
+      pdf.setFontSize(40); pdf.setTextColor(255,215,0);
+      pdf.text("VIP",105,30,{align:"center"});
+      pdf.setFontSize(20); pdf.setTextColor(255,255,255);
+      pdf.text("MEMBERS ONLY",105,50,{align:"center"});
+      pdf.setFontSize(30); pdf.setFont("cursive");
+      pdf.text("Invitation",105,70,{align:"center"});
+      pdf.setFontSize(16); pdf.setFont("Arial");
+      pdf.text(`Nom : ${nom}`,20,100);
+      pdf.text("Evènement : Gala VIP Night",20,120);
+      pdf.text("Lieu : Yaoundé",20,140);
+      pdf.text("Date : 20 Avril 2026",20,160);
+      pdf.text("Dress code : Chic & Elegant",20,180);
+      pdf.text("Organisateur : VIP Club",20,200);
+      return pdf.output("blob");
+    }
+
+    async function sendEmail(nom,email,pdfBlob){
+      const reader = new FileReader();
+      reader.readAsDataURL(pdfBlob);
+      reader.onloadend = function(){
+        const base64data = reader.result.split(',')[1];
+        emailjs.send(emailService,emailTemplate,{
+          to_email: email,
+          nom: nom,
+          attachment: base64data
+        }).then(()=> alert(`Billet envoyé par email à ${nom}`))
+          .catch(err=> alert("Erreur email : "+err));
+      }
+    }
+
+    setInterval(loadAdmin,10000);
+
+  }); // DOMContentLoaded
+</script>
+
+</div>
+</body>
+</html>
